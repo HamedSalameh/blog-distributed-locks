@@ -5,7 +5,13 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo1-DistributedLockRedis", "Demo1-DistributedLockRedis\Demo1-DistributedLockRedis.csproj", "{DD75810E-472C-4488-A087-C44B1AB4567B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo2-RedisDistributedLock.WebAPI", "Demo2-RedisDistributedLock.WebAPI\Demo2-RedisDistributedLock.WebAPI.csproj", "{45231A5D-E1BD-443A-A829-C83702912118}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo2-RedisDistributedLock.WebAPI", "Demo2-RedisDistributedLock.WebAPI\Demo2-RedisDistributedLock.WebAPI.csproj", "{45231A5D-E1BD-443A-A829-C83702912118}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo3-ZooKeeperDistributedLock.WebAPI", "Demo3-ZooKeeperDistributedLock.WebAPI\Demo3-ZooKeeperDistributedLock.WebAPI.csproj", "{D95E43FE-CACF-4811-85BF-3EA47BA02C10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo3-ZooKeeperDistributedLock.Tester", "Demo3-ZooKeeperDistributedLock.Tester\Demo3-ZooKeeperDistributedLock.Tester.csproj", "{D1E55502-1DF6-48D4-AD5E-CCB5A380F61A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo4-ZooKeeperDistributedLock.WebAPI", "Demo4-ZooKeeperDistributedLock.WebAPI\Demo4-ZooKeeperDistributedLock.WebAPI.csproj", "{72A9ED94-35AB-46C4-83CD-DDC282E61F08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{45231A5D-E1BD-443A-A829-C83702912118}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45231A5D-E1BD-443A-A829-C83702912118}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45231A5D-E1BD-443A-A829-C83702912118}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D95E43FE-CACF-4811-85BF-3EA47BA02C10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D95E43FE-CACF-4811-85BF-3EA47BA02C10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D95E43FE-CACF-4811-85BF-3EA47BA02C10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D95E43FE-CACF-4811-85BF-3EA47BA02C10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1E55502-1DF6-48D4-AD5E-CCB5A380F61A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1E55502-1DF6-48D4-AD5E-CCB5A380F61A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1E55502-1DF6-48D4-AD5E-CCB5A380F61A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1E55502-1DF6-48D4-AD5E-CCB5A380F61A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72A9ED94-35AB-46C4-83CD-DDC282E61F08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72A9ED94-35AB-46C4-83CD-DDC282E61F08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72A9ED94-35AB-46C4-83CD-DDC282E61F08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72A9ED94-35AB-46C4-83CD-DDC282E61F08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
