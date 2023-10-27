@@ -56,16 +56,21 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.InventoryService
             using (DistributedLockProvider locker = new DistributedLockProvider(options))
             {
                 var _lock = locker.CreateLock("lock");
-                locker.Lock(_lock);
+                var lockAcuired = locker.Lock(_lock);
+
+                if (!lockAcuired)
+                {
+                    throw new Exception("Could not acquire lock");
+                }
 
                 var inventory = inventoryDB;
                 var item = inventory.FirstOrDefault(i => i.Id == id);
+
                 if (item == null)
                 {
                     throw new Exception($"Item with id {id} does not exist");
                 }
 
-                //await distributedLockProvider.Unlock();
                 return item;
             }
         }
@@ -74,18 +79,19 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.InventoryService
         {
             logger.LogDebug("Getting all items");
             var items = new List<InventoryItem>();
- 
+
             using (DistributedLockProvider locker = new DistributedLockProvider(options))
             {
-                await locker.AcquireLockAsync("lock", cancellationToken);
-
-                // get inventory items with lock protection
-                items = inventoryDB;
+                if (await locker.AcquireLockAsync("lock", cancellationToken))
+                {
+                    // get inventory items with lock protection
+                    items = inventoryDB;
+                }
 
             }
 
             if (cancellationToken.IsCancellationRequested)
-            {                
+            {
                 return await Task.FromCanceled<IEnumerable<InventoryItem>>(cancellationToken);
             }
 
