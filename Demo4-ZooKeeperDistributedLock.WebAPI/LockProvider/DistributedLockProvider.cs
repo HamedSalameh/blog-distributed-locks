@@ -158,19 +158,6 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.LockProvider
                 if (index > 0)
                 {
                     var are = new AutoResetEvent(false);
-                    //var watcher = new NodeWatcher();
-                    //watcher.NodeDeleted += (ze) =>
-                    //{
-                    //    are.Set();
-                    //};
-                    //if (await zookeeperHelper.WatchAsync(array[index - 1], watcher))
-                    //{
-                    //    if (!are.WaitOne(millisecondsTimeout))
-                    //    {
-                    //        return false;
-                    //    }
-                    //}
-
                     are.Dispose();
                 }
                 else
