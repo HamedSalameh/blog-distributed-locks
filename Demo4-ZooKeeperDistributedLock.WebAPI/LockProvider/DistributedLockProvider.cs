@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Options;
 using org.apache.zookeeper;
 using org.apache.zookeeper.data;
+using System.Diagnostics.Eventing.Reader;
 using System.Text;
+using System.Threading;
 
 namespace Demo4_ZooKeeperDistributedLock.WebAPI.LockProvider
 {
@@ -83,12 +85,13 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.LockProvider
             CurrentPath = pathSeperator;
         }
 
-        public bool Connect()
+        public bool Connect(CancellationToken cancellationToken)
         {
             if (Connected)
             {
                 return true;
             }
+
             if (zookeeper == null)
             {
                 lock (this)
@@ -96,13 +99,28 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.LockProvider
                     defaultWatcher = defaultWatcher ?? new DefaultWatcher(are);
                     are.Reset();
                     zookeeper = new ZooKeeper(Address, SessionTimeout, defaultWatcher);
+
+                    // Check for cancellation before waiting
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return false;
+                    }
+
                     are.WaitOne(SessionTimeout);
                 }
             }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                Close();
+                return false;
+            }
+
             if (!Connected)
             {
                 return false;
             }
+
             OnConnected?.Invoke();
 
             return true;
@@ -115,6 +133,23 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.LockProvider
             {
                 zookeeper.closeAsync().Wait();
             }
+        }
+
+        /// <summary>
+        /// Method to create and acquire a lock on the provided path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async Task<bool> AcquireLockAsync(string path, CancellationToken cancellationToken)
+        {
+            Connect(cancellationToken);
+
+            var lockHandler = await SetDataAsync(path, "", false, true);
+            if (lockHandler != null)
+            {
+                return await LockAsync(lockHandler);
+            }
+            return false;
         }
 
         /// <summary>
@@ -158,6 +193,7 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.LockProvider
                 if (index > 0)
                 {
                     var are = new AutoResetEvent(false);
+                    // Here we can set node watchers to get notified when the previous node is deleted
                     are.Dispose();
                 }
                 else

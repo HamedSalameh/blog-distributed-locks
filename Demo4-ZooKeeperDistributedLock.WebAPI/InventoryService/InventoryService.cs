@@ -1,7 +1,9 @@
 ﻿
 using Demo4_ZooKeeperDistributedLock.WebAPI.Controllers;
 using Demo4_ZooKeeperDistributedLock.WebAPI.LockProvider;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Net;
 
 namespace Demo4_ZooKeeperDistributedLock.WebAPI.InventoryService
 {
@@ -51,8 +53,10 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.InventoryService
         {
             // get inventory item by id with lock protection
             logger.LogDebug($"Getting item with id {id}");
-            //await distributedLockProvider.Lock();
+            using (DistributedLockProvider locker = new DistributedLockProvider(options))
             {
+                var _lock = locker.CreateLock("lock");
+                locker.Lock(_lock);
 
                 var inventory = inventoryDB;
                 var item = inventory.FirstOrDefault(i => i.Id == id);
@@ -66,16 +70,14 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.InventoryService
             }
         }
 
-        public Task<IEnumerable<InventoryItem>> GetAll(CancellationToken cancellationToken)
+        public async Task<IEnumerable<InventoryItem>> GetAll(CancellationToken cancellationToken)
         {
             logger.LogDebug("Getting all items");
             var items = new List<InventoryItem>();
  
             using (DistributedLockProvider locker = new DistributedLockProvider(options))
             {
-                locker.Connect();
-                var _lock = locker.CreateLock("lock");
-                locker.Lock(_lock);
+                await locker.AcquireLockAsync("lock", cancellationToken);
 
                 // get inventory items with lock protection
                 items = inventoryDB;
@@ -83,11 +85,11 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.InventoryService
             }
 
             if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled<IEnumerable<InventoryItem>>(cancellationToken);
+            {                
+                return await Task.FromCanceled<IEnumerable<InventoryItem>>(cancellationToken);
             }
 
-            return Task.FromResult<IEnumerable<InventoryItem>>(items);
+            return items;
         }
     }
 }
