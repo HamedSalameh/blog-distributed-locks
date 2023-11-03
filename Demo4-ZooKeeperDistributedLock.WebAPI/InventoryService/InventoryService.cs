@@ -56,7 +56,7 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.InventoryService
             using (DistributedLockProvider locker = new DistributedLockProvider(options))
             {
                 var _lock = locker.CreateLock("lock");
-                var lockAcuired = locker.Lock(_lock);
+                var lockAcuired = locker.Lock(_lock, cancellationToken);
 
                 if (!lockAcuired)
                 {

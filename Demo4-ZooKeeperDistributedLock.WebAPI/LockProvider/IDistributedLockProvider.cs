@@ -8,7 +8,7 @@
         string CreateLock(string path);
         Task<string[]> GetChildrenAsync(string path, bool order = false);
         Task<string[]> GetChildrenByAbsolutePathAsync(string absolutePath, bool order = false);
-        bool Lock(string path);
-        Task<bool> LockAsync(string path);
+        bool Lock(string path, CancellationToken cancellationToken);
+        Task<bool> LockAsync(string path, CancellationToken cancellationToken);
     }
 }

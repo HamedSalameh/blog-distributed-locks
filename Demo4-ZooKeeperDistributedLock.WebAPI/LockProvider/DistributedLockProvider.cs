@@ -40,16 +40,6 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.LockProvider
         public string Address { get; set; }
         string pathSeperator = "/";
 
-        // Basic node watcher class
-        private class NullWatcher : Watcher
-        {
-            public static readonly NullWatcher Instance = new();
-
-            private NullWatcher() { }
-
-            public override Task process(WatchedEvent @event) => Task.CompletedTask;
-        }
-
         // ctor with IOptions
         public DistributedLockProvider(IOptions<DistributedLockOptions> options)
         {
@@ -147,7 +137,7 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.LockProvider
             var lockHandler = await SetDataAsync(path, "", false, true);
             if (lockHandler != null)
             {
-                return await LockAsync(lockHandler);
+                return await LockAsync(lockHandler, cancellationToken);
             }
             return false;
         }
@@ -173,13 +163,18 @@ namespace Demo4_ZooKeeperDistributedLock.WebAPI.LockProvider
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public bool Lock(string path)
+        public bool Lock(string path, CancellationToken cancellationToken)
         {
-            return LockAsync(path).GetAwaiter().GetResult();
+            return LockAsync(path, cancellationToken).GetAwaiter().GetResult();
         }
 
-        public async Task<bool> LockAsync(string path)
+        public async Task<bool> LockAsync(string path, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return false;
+            }
+
             var array = await GetChildrenAsync("", true);
             if (array != null && array.Length > 0)
             {
